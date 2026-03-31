@@ -1,27 +1,26 @@
 import hikari
 import lightbulb
 import asyncio
+from dotenv import load_dotenv
 import os
 from googletrans import Translator
+from googletrans.constants import LANGUAGES
+import extensions
 
+load_dotenv()
 
 try:
     bot = hikari.GatewayBot(os.environ['DISCORD_BOT_TOKEN'], logs='DEBUG')
 except KeyError:
     raise KeyError('You need to set up your DISCORD_BOT_TOKEN environment variable')
 
-async def ping(event: hikari.GuildMessageCreateEvent) -> None:
-    """If a non-bot user mentions your bot, respond with 'Pong!'."""
+client = lightbulb.client_from_app(bot)
+@bot.listen(hikari.StartingEvent)
+async def on_starting(_: hikari.StartingEvent) -> None:
+    await client.load_extensions_from_package(extensions)
+    await client.start()
 
-    # Do not respond to bots nor webhooks pinging us, only user accounts
-    if not event.is_human:
-        return
-
-    me = bot.get_me()
-
-    if me.id in event.message.user_mentions_ids:
-        await event.message.respond("Pong!")
-
+bot.run()
 
 
 
