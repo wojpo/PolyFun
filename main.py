@@ -3,7 +3,6 @@ import lightbulb
 import asyncio
 from dotenv import load_dotenv
 import os
-from googletrans import Translator
 from googletrans.constants import LANGUAGES
 import extensions
 
@@ -21,16 +20,3 @@ async def on_starting(_: hikari.StartingEvent) -> None:
     await client.start()
 
 bot.run()
-
-
-
-
-
-
-
-# async def translate_text():
-#     async with Translator() as translator:
-#         result = await translator.translate('truth is my light.', dest='ja')
-#         print(result.text)  # <Translated src=ko dest=ja text=こんにちは。 pronunciation=Kon'nichiwa.>
-#
-# asyncio.run(translate_text())
