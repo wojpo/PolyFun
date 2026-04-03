@@ -1,15 +1,14 @@
 import hikari
 import lightbulb
-import asyncio
 from dotenv import load_dotenv
 import os
-from googletrans.constants import LANGUAGES
 import extensions
 
 load_dotenv()
 
 try:
-    bot = hikari.GatewayBot(os.environ['DISCORD_BOT_TOKEN'], logs='DEBUG')
+    intents = hikari.Intents.GUILD_MESSAGES | hikari.Intents.MESSAGE_CONTENT
+    bot = hikari.GatewayBot(os.environ['DISCORD_BOT_TOKEN'], logs='DEBUG', intents=intents)
 except KeyError:
     raise KeyError('You need to set up your DISCORD_BOT_TOKEN environment variable')
 
