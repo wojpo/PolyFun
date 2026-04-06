@@ -1,3 +1,4 @@
+import hikari
 import lightbulb
 
 loader = lightbulb.Loader()
@@ -10,4 +11,4 @@ class HealthCheck(
 ):
     @lightbulb.invoke
     async def invoke(self, ctx: lightbulb.Context) -> None:
-        await ctx.respond('Bot is running properly ;3')
+        await ctx.respond('Bot is running properly ;3', flags=hikari.MessageFlag.EPHEMERAL)

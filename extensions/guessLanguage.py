@@ -6,9 +6,9 @@ import httpx
 import lightbulb
 from googletrans import Translator
 from googletrans.constants import LANGUAGES
+from extensions import active_guesses
 
 loader = lightbulb.Loader()
-active_guesses = {}
 
 @loader.listener(hikari.MessageCreateEvent)
 async def on_guess_message(event: hikari.MessageCreateEvent) -> None:
@@ -24,7 +24,7 @@ async def on_guess_message(event: hikari.MessageCreateEvent) -> None:
 
         if guess == expected or guess == expected.split('(')[0].strip():
             await event.message.add_reaction("✅")
-            embed = hikari.Embed(title=f'{event.author} guessed correctly', description=f'The language was {expected}', color='0x00ff00')
+            embed = hikari.Embed(title=f'{event.author} guessed correctly', description=f'The language was {expected}', color=0x00ff00)
             await event.message.respond(embed=embed)
             del active_guesses[channel_id]
         else:
@@ -36,9 +36,9 @@ async def on_guess_message(event: hikari.MessageCreateEvent) -> None:
 class GuessLanguage(
     lightbulb.SlashCommand,
     name='guess_lang',
-    description='Give it a sentence and try to guess language',
+    description='Provide a sentence and try to guess the language',
 ):
-    sentence = lightbulb.string('sentence', 'Give it a sentence which it will translate', default='hello world', max_length=200)
+    sentence = lightbulb.string('sentence', 'Enter a sentence to translate', default='hello world', max_length=200)
 
     @lightbulb.invoke
     async def invoke(self, ctx: lightbulb.Context) -> None:
@@ -54,6 +54,10 @@ class GuessLanguage(
             async with Translator() as translator:
                 text_to_translate = self.sentence if self.sentence else 'hello world'
                 result = await translator.translate(text_to_translate, dest=lang_code)
+                while result.text == text_to_translate:
+                    lang_code = random.choice(list(LANGUAGES.keys()))
+                    lang_name = LANGUAGES[lang_code]
+                    result = await translator.translate(text_to_translate, dest=lang_code)
         except (httpx.ReadTimeout, httpx.ConnectTimeout) as e:
             await ctx.respond(
         f"Translation timed out for language `{lang_name}`. Please try again.",
