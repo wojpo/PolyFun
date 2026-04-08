@@ -49,7 +49,6 @@ class GuessLanguage(
 
         lang_code = random.choice(list(LANGUAGES.keys()))
         lang_name = LANGUAGES[lang_code]
-        print(lang_name)
         try:
             async with Translator() as translator:
                 text_to_translate = self.sentence if self.sentence else 'hello world'
